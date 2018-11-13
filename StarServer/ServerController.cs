@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Configuration;
+using System;
 
 namespace StarServer
 {
@@ -13,6 +14,7 @@ namespace StarServer
         [HttpGet]
         public HttpResponseMessage Health()
         {
+            Console.WriteLine($"Request received for Health check");
             return Request.CreateResponse(HttpStatusCode.OK, "Server is up and running");
         }
 
@@ -20,6 +22,7 @@ namespace StarServer
         [HttpGet]
         public HttpResponseMessage Start()
         {
+            Console.WriteLine($"Request received for Starting the server");
             if (IsAuthorizedRequest())
             {
                 var scriptPath = ConfigurationManager.AppSettings["RunAllPath"];
@@ -40,6 +43,7 @@ namespace StarServer
         [HttpGet]
         public HttpResponseMessage Deploy()
         {
+            Console.WriteLine($"Request received for Deployment");
             if (IsAuthorizedRequest())
             {
                 //execute script order by their `Key` value i.e. 1, 2, 3...
@@ -69,6 +73,7 @@ namespace StarServer
         [HttpGet]
         public HttpResponseMessage Create(string dbName)
         {
+            Console.WriteLine($"Request received for creating new database");
             if (IsAuthorizedRequest())
             {
                 if (string.IsNullOrWhiteSpace(dbName))
@@ -88,6 +93,7 @@ namespace StarServer
         [HttpGet]
         public HttpResponseMessage Kill()
         {
+            Console.WriteLine($"Request received for to kill starcounter host");
             if (IsAuthorizedRequest())
             {
                 Processor.ExecuteCommand("CMD.exe", "/C staradmin kill all");
@@ -102,6 +108,7 @@ namespace StarServer
         [HttpGet]
         public HttpResponseMessage Delete(string dbName)
         {
+            Console.WriteLine($"Request received for Deleting the database");
             if (IsAuthorizedRequest())
             {
                 if (string.IsNullOrWhiteSpace(dbName))
