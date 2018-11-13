@@ -52,6 +52,7 @@ namespace StarServer
                     if (key != MaxKeyValue)
                     {
                         var scriptPath = ConfigurationManager.AppSettings[key.ToString()];
+                        Console.WriteLine($"Executing {scriptPath}");
                         if (scriptPath.EndsWith(".ps1"))
                         {
                             Processor.ExecuteCommand("powershell.exe", $"-noprofile -executionpolicy bypass -file {@scriptPath}");
