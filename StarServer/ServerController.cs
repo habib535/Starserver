@@ -21,6 +21,25 @@ namespace StarServer
         {
             if (IsAuthorizedRequest())
             {
+                var scriptPath = ConfigurationManager.AppSettings["RunAllPath"];
+                Processor.ExecuteCommand("CMD.exe", $"/c {@scriptPath}");
+
+                scriptPath = ConfigurationManager.AppSettings["LoadConfigPath"];
+                Processor.ExecuteCommand("CMD.exe", $"/c {@scriptPath}");
+
+                return Request.CreateResponse(HttpStatusCode.Accepted, "Success");
+            }
+            else
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.Forbidden, "Authorization failed!");
+            }
+        }
+
+        [HttpGet]
+        public HttpResponseMessage Deploy()
+        {
+            if (IsAuthorizedRequest())
+            {
                 //execute script order by their `Key` value i.e. 1, 2, 3...
                 foreach (int key in ConfigurationManager.AppSettings.AllKeys.Select(x => int.TryParse(x, out int val) ? val : MaxKeyValue).OrderBy(x => x))
                 {
@@ -33,7 +52,7 @@ namespace StarServer
                         }
                         else
                         {
-                            Processor.ExecuteCommand("CMD.exe", "/c {@scriptPath}");
+                            Processor.ExecuteCommand("CMD.exe", $"/c {@scriptPath}");
                         }
                     }
                 }

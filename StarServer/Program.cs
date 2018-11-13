@@ -15,7 +15,7 @@ namespace StarServer
             }
             else
             {
-                AuthorizationKey = "551691c9-43da-477d-a358-94bd01be0d73";//Guid.NewGuid().ToString();
+                AuthorizationKey = Guid.NewGuid().ToString();
             }
             StartOptions options = new StartOptions();
             options.Urls.Add("http://localhost:5050");
