@@ -16,6 +16,7 @@ namespace StarServer
             return Request.CreateResponse(HttpStatusCode.OK, "Server is up and running");
         }
 
+        //todo: come with a better name
         [HttpGet]
         public HttpResponseMessage Start()
         {
@@ -35,6 +36,7 @@ namespace StarServer
             }
         }
 
+        //todo: come with a better name
         [HttpGet]
         public HttpResponseMessage Deploy()
         {
@@ -56,6 +58,25 @@ namespace StarServer
                         }
                     }
                 }
+                return Request.CreateResponse(HttpStatusCode.Accepted, "Success");
+            }
+            else
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.Forbidden, "Authorization failed!");
+            }
+        }
+
+        [HttpGet]
+        public HttpResponseMessage Create(string dbName)
+        {
+            if (IsAuthorizedRequest())
+            {
+                if (string.IsNullOrWhiteSpace(dbName))
+                {
+                    dbName = "default";
+                }
+                Processor.ExecuteCommand("CMD.exe", "/C staradmin start server");
+                Processor.ExecuteCommand("CMD.exe", $"/C staradmin new db {dbName}");
                 return Request.CreateResponse(HttpStatusCode.Accepted, "Success");
             }
             else
