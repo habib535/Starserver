@@ -17,6 +17,7 @@ namespace StarServer
             {
                 AuthorizationKey = Guid.NewGuid().ToString();
             }
+
             StartOptions options = new StartOptions();
             options.Urls.Add("http://localhost:5050");
             options.Urls.Add("http://127.0.0.1:5050");

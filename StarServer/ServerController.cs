@@ -4,12 +4,14 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Configuration;
 using System;
+using System.Threading.Tasks;
 
 namespace StarServer
 {
     public class StarServerController : ApiController
     {
         protected const int MaxKeyValue = 9999;
+        StarServerHttpClient client = new StarServerHttpClient();
 
         [HttpGet]
         public HttpResponseMessage Health()
@@ -46,6 +48,7 @@ namespace StarServer
             Console.WriteLine($"Request received for Deployment");
             if (IsAuthorizedRequest())
             {
+                Task.Run(() => { UpdateChannel("deployment started"); });
                 //execute script order by their `Key` value i.e. 1, 2, 3...
                 foreach (int key in ConfigurationManager.AppSettings.AllKeys.Select(x => int.TryParse(x, out int val) ? val : MaxKeyValue).OrderBy(x => x))
                 {
@@ -63,11 +66,25 @@ namespace StarServer
                         }
                     }
                 }
+                Task.Run(() => { UpdateChannel("deployment Finished"); });
                 return Request.CreateResponse(HttpStatusCode.Accepted, "Success");
             }
             else
             {
                 return Request.CreateErrorResponse(HttpStatusCode.Forbidden, "Authorization failed!");
+            }
+        }
+
+        private void UpdateChannel(string message)
+        {
+            try
+            {
+                var environmentName = ConfigurationManager.AppSettings["Environment"];
+                var result = client.PostAsync($"*{environmentName}*: {message}").Result;
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(exp.ToString());
             }
         }
 
