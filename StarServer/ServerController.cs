@@ -12,6 +12,7 @@ namespace StarServer
     {
         protected const int MaxKeyValue = 9999;
         StarServerHttpClient client = new StarServerHttpClient();
+        ServicesManager servicesManager = new ServicesManager();
 
         [HttpGet]
         public HttpResponseMessage Health()
@@ -49,6 +50,7 @@ namespace StarServer
             if (IsAuthorizedRequest())
             {
                 Task.Run(() => { UpdateChannel("deployment started"); });
+                servicesManager.StopService("nginx");
                 //execute script order by their `Key` value i.e. 1, 2, 3...
                 foreach (int key in ConfigurationManager.AppSettings.AllKeys.Select(x => int.TryParse(x, out int val) ? val : MaxKeyValue).OrderBy(x => x))
                 {
@@ -66,6 +68,7 @@ namespace StarServer
                         }
                     }
                 }
+                servicesManager.StartService("nginx");
                 Task.Run(() => { UpdateChannel("deployment Finished"); });
                 return Request.CreateResponse(HttpStatusCode.Accepted, "Success");
             }
