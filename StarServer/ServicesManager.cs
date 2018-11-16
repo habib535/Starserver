@@ -9,6 +9,7 @@ namespace StarServer
         {
             try
             {
+                Console.WriteLine($"Starting windows service: {serviceName}");
                 ServiceController service = new ServiceController(serviceName);
                 service.Start();
                 var timeout = new TimeSpan(0, 0, 10); // 10 seconds
@@ -24,6 +25,7 @@ namespace StarServer
         {
             try
             {
+                Console.WriteLine($"Stopping windows service: {serviceName}");
                 ServiceController service = new ServiceController(serviceName);
                 service.Stop();
                 var timeout = new TimeSpan(0, 0, 10); // 10 seconds
