@@ -11,6 +11,7 @@ namespace StarServer
     public class StarServerController : ApiController
     {
         protected const int MaxKeyValue = 9999;
+        protected static bool DeploymentInProgress = false;
         StarServerHttpClient client = new StarServerHttpClient();
         ServicesManager servicesManager = new ServicesManager();
 
@@ -47,8 +48,9 @@ namespace StarServer
         public HttpResponseMessage Deploy()
         {
             Console.WriteLine($"Request received for Deployment");
-            if (IsAuthorizedRequest())
+            if (IsAuthorizedRequest() && !DeploymentInProgress)
             {
+                DeploymentInProgress = true;
                 Task.Run(() => { UpdateChannel("deployment started"); });
                 servicesManager.StopService("nginx");
                 //execute script order by their `Key` value i.e. 1, 2, 3...
@@ -70,10 +72,12 @@ namespace StarServer
                 }
                 servicesManager.StartService("nginx");
                 Task.Run(() => { UpdateChannel("deployment Finished"); });
+                DeploymentInProgress = false;
                 return Request.CreateResponse(HttpStatusCode.Accepted, "Success");
             }
             else
             {
+                DeploymentInProgress = false;
                 return Request.CreateErrorResponse(HttpStatusCode.Forbidden, "Authorization failed!");
             }
         }
