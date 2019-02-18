@@ -5,11 +5,12 @@ namespace StarServer
 {
     public class ServicesManager
     {
+        ILogger logger = new Logger();
         public void StartService(string serviceName)
         {
             try
             {
-                Console.WriteLine($"Starting windows service: {serviceName}");
+                logger.Log($"Starting windows service: {serviceName}");
                 ServiceController service = new ServiceController(serviceName);
                 service.Start();
                 var timeout = new TimeSpan(0, 0, 10); // 10 seconds
@@ -17,7 +18,7 @@ namespace StarServer
             }
             catch (Exception exp)
             {
-                Console.WriteLine(exp.ToString());
+                logger.Log(exp.ToString());
             }
         }
 
@@ -25,7 +26,7 @@ namespace StarServer
         {
             try
             {
-                Console.WriteLine($"Stopping windows service: {serviceName}");
+                logger.Log($"Stopping windows service: {serviceName}");
                 ServiceController service = new ServiceController(serviceName);
                 service.Stop();
                 var timeout = new TimeSpan(0, 0, 10); // 10 seconds
@@ -33,7 +34,7 @@ namespace StarServer
             }
             catch (Exception exp)
             {
-                Console.WriteLine(exp.ToString());
+                logger.Log(exp.ToString());
             }
         }
     }

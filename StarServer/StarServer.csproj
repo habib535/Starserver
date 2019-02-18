@@ -69,6 +69,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ILogger.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="ServicesManager.cs" />
     <Compile Include="StarServerHttpClient.cs" />
     <Compile Include="Processor.cs" />
